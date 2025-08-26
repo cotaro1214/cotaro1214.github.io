@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phasamon's Restaurant - เกมร้านอาหาร</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #FFE4E6, #F0E6FF, #E6F3FF, #E6FFE6);
+            min-height: 100vh;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .restaurant-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .owner-name {
+            color: #FF6B9D;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .restaurant-name {
+            color: #8B5A96;
+            font-size: 18px;
+            margin-top: 5px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+            color: #8B5A96;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            color: #FF6B9D;
+        }
+
+        .game-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+            height: 80vh;
+        }
+
+        .restaurant-area {
+            display: grid;
+            grid-template-rows: 200px 1fr;
+            gap: 20px;
+        }
+
+        .customer-queue {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow-x: auto;
+        }
+
+        .queue-title {
+            color: #8B5A96;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .customers-row {
+            display: flex;
+            gap: 15px;
+            min-height: 120px;
+            align-items: center;
+        }
+
+        .customer {
+            min-width: 120px;
+            background: linear-gradient(45deg, #FFE4E6, #F0E6FF);
+            border: 3px solid #DDA0DD;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .customer:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: #FF69B4;
+        }
+
+        .customer.selected {
+            background: linear-gradient(45deg, #FFB6C1, #DDA0DD);
+            border-color: #FF1493;
+            color: white;
+        }
+
+        .customer-avatar {
+            font-size: 40px;
+            margin-bottom: 5px;
+        }
+
+        .customer-order {
+            font-size: 24px;
+            margin: 5px 0;
+        }
+
+        .customer-patience {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .patience-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #FF4444, #FFAA00, #44FF44);
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .kitchen-area {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 20px;
+        }
+
+        .kitchen-title {
+            color: #8B5A96;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .cooking-surface {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            background: linear-gradient(45deg, #F0F8FF, #FFF0F5);
+            border-radius: 15px;
+            padding: 20px;
+            border: 3px dashed #FFB6C1;
+            min-height: 200px;
+        }
+
+        .ingredient-slot {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px dashed #DDA0DD;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ingredient-slot:hover {
+            background: rgba(255, 182, 193, 0.3);
+            border-color: #FF69B4;
+            transform: scale(1.05);
+        }
+
+        .ingredient-slot.filled {
+            background: linear-gradient(45deg, #FFE4E1, #E6E6FA);
+            border: 2px solid #FF69B4;
+        }
+
+        .ingredient {
+            font-size: 35px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+
+        .cooking-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .cook-btn, .clear-btn, .serve-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .cook-btn {
+            background: linear-gradient(45deg, #FF6B9D, #FF8E9B);
+            color: white;
+        }
+
+        .clear-btn {
+            background: linear-gradient(45deg, #87CEEB, #98FB98);
+            color: white;
+        }
+
+        .serve-btn {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: white;
+        }
+
+        .cook-btn:hover, .clear-btn:hover, .serve-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .ingredients-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .panel-title {
+            color: #8B5A96;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .ingredients-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            flex: 1;
+        }
+
+        .ingredient-btn {
+            aspect-ratio: 1;
+            background: linear-gradient(45deg, #FFE4E6, #F0E6FF);
+            border: 2px solid #DDA0DD;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .ingredient-btn:hover {
+            background: linear-gradient(45deg, #FFB6C1, #DDA0DD);
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .current-dish {
+            background: linear-gradient(45deg, #E6FFE6, #E6F3FF);
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #87CEEB;
+            text-align: center;
+        }
+
+        .dish-display {
+            font-size: 40px;
+            margin: 10px 0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: all 0.5s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left: 5px solid #4CAF50;
+            background: linear-gradient(45deg, #E8F5E8, #F0FFF0);
+        }
+
+        .notification.warning {
+            border-left: 5px solid #FF9800;
+            background: linear-gradient(45deg, #FFF3E0, #FFFACD);
+        }
+
+        .notification.error {
+            border-left: 5px solid #F44336;
+            background: linear-gradient(45deg, #FFEBEE, #FFE4E1);
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #FFB6C1, #DDA0DD);
+            border-radius: 50%;
+            animation: float 4s infinite ease-in-out;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        @media (max-width: 1024px) {
+            .game-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .restaurant-area {
+                grid-template-rows: auto auto;
+            }
+            
+            .cooking-surface {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .stats {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            .ingredients-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="header">
+        <div class="restaurant-info">
+            <div class="owner-name">👩‍🍳 Phasamon Tangtrakul</div>
+            <div class="restaurant-name">🍽️ ร้านอาหารพาสามอน - Phasamon's Restaurant</div>
+        </div>
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="money">฿0</div>
+                <div>รายได้</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="happiness">😊 100%</div>
+                <div>ความพึงพอใจ</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="served">0</div>
+                <div>ลูกค้าที่บริการ</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="restaurant-area">
+            <div class="customer-queue">
+                <div class="queue-title">🙋‍♀️ คิวลูกค้า - รอบริการ</div>
+                <div class="customers-row" id="customersRow"></div>
+            </div>
+
+            <div class="kitchen-area">
+                <div class="kitchen-title">👨‍🍳 ห้องครัว</div>
+                <div class="cooking-surface" id="cookingSurface">
+                    <div class="ingredient-slot" data-slot="0"></div>
+                    <div class="ingredient-slot" data-slot="1"></div>
+                    <div class="ingredient-slot" data-slot="2"></div>
+                    <div class="ingredient-slot" data-slot="3"></div>
+                    <div class="ingredient-slot" data-slot="4"></div>
+                    <div class="ingredient-slot" data-slot="5"></div>
+                </div>
+                <div class="cooking-controls">
+                    <button class="cook-btn" onclick="cookDish()">🔥 ปรุงอาหาร</button>
+                    <button class="serve-btn" onclick="serveDish()">🍽️ เสิร์ฟ</button>
+                    <button class="clear-btn" onclick="clearKitchen()">🧹 เคลียร์</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ingredients-panel">
+            <div class="panel-title">🥘 วัตถุดิบ</div>
+            
+            <div class="ingredients-grid">
+                <div class="ingredient-btn" onclick="addIngredient('🍎')">🍎</div>
+                <div class="ingredient-btn" onclick="addIngredient('🥕')">🥕</div>
+                <div class="ingredient-btn" onclick="addIngredient('🍅')">🍅</div>
+                <div class="ingredient-btn" onclick="addIngredient('🧅')">🧅</div>
+                <div class="ingredient-btn" onclick="addIngredient('🥬')">🥬</div>
+                <div class="ingredient-btn" onclick="addIngredient('🥒')">🥒</div>
+                <div class="ingredient-btn" onclick="addIngredient('🍄')">🍄</div>
+                <div class="ingredient-btn" onclick="addIngredient('🌶️')">🌶️</div>
+                <div class="ingredient-btn" onclick="addIngredient('🥩')">🥩</div>
+                <div class="ingredient-btn" onclick="addIngredient('🍗')">🍗</div>
+                <div class="ingredient-btn" onclick="addIngredient('🐟')">🐟</div>
+                <div class="ingredient-btn" onclick="addIngredient('🍚')">🍚</div>
+            </div>
+
+            <div class="current-dish">
+                <div style="color: #4682B4; font-weight: bold; margin-bottom: 10px;">🍳 อาหารที่ปรุง</div>
+                <div class="dish-display" id="currentDish">-</div>
+                <div style="color: #666; font-size: 14px;" id="dishName">ยังไม่ได้ปรุงอาหาร</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <div id="notificationText"></div>
+    </div>
+
+    <script>
+        let money = 0;
+        let happiness = 100;
+        let servedCustomers = 0;
+        let placedIngredients = [];
+        let currentDish = null;
+        let selectedCustomer = null;
+        let customers = [];
+        let customerIdCounter = 0;
+
+        const customerAvatars = ['👨', '👩', '🧒', '👴', '👵', '👨‍💼', '👩‍💼', '👨‍🎓', '👩‍🎓', '🧑‍🍳'];
+        
+        const dishes = {
+            '🍎,🥕,🍅': { emoji: '🥗', name: 'สลัดผักผลไม้', price: 50 },
+            '🥩,🧅,🍚': { emoji: '🍛', name: 'ข้าวผัดเนื้อ', price: 80 },
+            '🍗,🍄,🥬': { emoji: '🍲', name: 'ซุปไก่เห็ด', price: 70 },
+            '🐟,🍚,🥒': { emoji: '🍱', name: 'เบนโตะปลา', price: 90 },
+            '🍅,🧅,🌶️': { emoji: '🍝', name: 'พาสต้าเผ็ด', price: 75 },
+            '🥕,🍄,🥬': { emoji: '🥘', name: 'แกงผัก', price: 60 },
+            '🍎,🥒': { emoji: '🥤', name: 'น้ำผลไม้', price: 30 },
+            '🍗,🍚': { emoji: '🍗', name: 'ไก่ย่าง', price: 65 }
+        };
+
+        const possibleOrders = Object.values(dishes);
+
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 4 + 's';
+                particle.style.animationDuration = (3 + Math.random() * 3) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        function generateCustomer() {
+            const order = possibleOrders[Math.floor(Math.random() * possibleOrders.length)];
+            const avatar = customerAvatars[Math.floor(Math.random() * customerAvatars.length)];
+            
+            return {
+                id: customerIdCounter++,
+                avatar: avatar,
+                order: order,
+                patience: 100,
+                maxPatience: 100,
+                patienceDecay: 0.5 + Math.random() * 0.5
+            };
+        }
+
+        function addCustomer() {
+            if (customers.length < 4) {
+                customers.push(generateCustomer());
+                renderCustomers();
+            }
+        }
+
+        function renderCustomers() {
+            const container = document.getElementById('customersRow');
+            container.innerHTML = '';
+
+            customers.forEach((customer, index) => {
+                const customerDiv = document.createElement('div');
+                customerDiv.className = 'customer';
+                if (selectedCustomer === customer.id) {
+                    customerDiv.classList.add('selected');
+                }
+                
+                customerDiv.onclick = () => selectCustomer(customer.id);
+                
+                customerDiv.innerHTML = `
+                    <div class="customer-avatar">${customer.avatar}</div>
+                    <div class="customer-order">${customer.order.emoji}</div>
+                    <div class="customer-patience">
+                        <div class="patience-bar" style="width: ${customer.patience}%"></div>
+                    </div>
+                `;
+                
+                container.appendChild(customerDiv);
+            });
+        }
+
+        function selectCustomer(customerId) {
+            selectedCustomer = customerId;
+            renderCustomers();
+            
+            const customer = customers.find(c => c.id === customerId);
+            if (customer) {
+                showNotification(`เลือกลูกค้า ${customer.avatar} ที่สั่ง ${customer.order.name}`, 'success');
+            }
+        }
+
+        function updatePatience() {
+            customers.forEach(customer => {
+                customer.patience -= customer.patienceDecay;
+                if (customer.patience <= 0) {
+                    // ลูกค้าหมดความอดทน
+                    customers = customers.filter(c => c.id !== customer.id);
+                    happiness = Math.max(0, happiness - 10);
+                    showNotification(`ลูกค้า ${customer.avatar} หมดความอดทน! 😤`, 'error');
+                }
+            });
+            
+            renderCustomers();
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('money').textContent = `฿${money}`;
+            document.getElementById('happiness').textContent = `😊 ${Math.round(happiness)}%`;
+            document.getElementById('served').textContent = servedCustomers;
+        }
+
+        function addIngredient(ingredient) {
+            const slots = document.querySelectorAll('.ingredient-slot');
+            let emptySlot = null;
+
+            for (let slot of slots) {
+                if (!slot.classList.contains('filled')) {
+                    emptySlot = slot;
+                    break;
+                }
+            }
+
+            if (emptySlot) {
+                emptySlot.innerHTML = `<div class="ingredient">${ingredient}</div>`;
+                emptySlot.classList.add('filled');
+                emptySlot.dataset.ingredient = ingredient;
+                placedIngredients.push(ingredient);
+                
+                emptySlot.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    emptySlot.style.transform = 'scale(1)';
+                }, 200);
+            } else {
+                showNotification('กระทะเต็มแล้ว! เคลียร์ก่อนนะคะ', 'warning');
+            }
+        }
+
+        function clearKitchen() {
+            const slots = document.querySelectorAll('.ingredient-slot');
+            slots.forEach(slot => {
+                slot.innerHTML = '';
+                slot.classList.remove('filled');
+                slot.removeAttribute('data-ingredient');
+            });
+            placedIngredients = [];
+            currentDish = null;
+            document.getElementById('currentDish').textContent = '-';
+            document.getElementById('dishName').textContent = 'ยังไม่ได้ปรุงอาหาร';
+        }
+
+        function cookDish() {
+            if (placedIngredients.length === 0) {
+                showNotification('ใส่วัตถุดิบก่อนปรุงนะคะ!', 'warning');
+                return;
+            }
+
+            const key = placedIngredients.sort().join(',');
+            const dish = dishes[key];
+
+            if (dish) {
+                currentDish = dish;
+                document.getElementById('currentDish').textContent = dish.emoji;
+                document.getElementById('dishName').textContent = dish.name;
+                showNotification(`ปรุง ${dish.name} สำเร็จแล้ว! 🎉`, 'success');
+            } else {
+                showNotification('สูตรนี้ไม่มีในเมนูค่ะ 😅', 'error');
+                currentDish = { emoji: '🗑️', name: 'อาหารเสีย', price: 0 };
+                document.getElementById('currentDish').textContent = '🗑️';
+                document.getElementById('dishName').textContent = 'อาหารเสีย';
+            }
+        }
+
+        function serveDish() {
+            if (!currentDish) {
+                showNotification('ปรุงอาหารก่อนเสิร์ฟนะคะ!', 'warning');
+                return;
+            }
+
+            if (selectedCustomer === null) {
+                showNotification('เลือกลูกค้าที่จะเสิร์ฟก่อนนะคะ!', 'warning');
+                return;
+            }
+
+            const customer = customers.find(c => c.id === selectedCustomer);
+            if (!customer) {
+                showNotification('ไม่พบลูกค้าที่เลือก!', 'error');
+                return;
+            }
+
+            if (customer.order.emoji === currentDish.emoji) {
+                // ถูกต้อง!
+                const tip = customer.patience > 80 ? currentDish.price * 0.2 : 0;
+                const totalEarning = currentDish.price + tip;
+                
+                money += totalEarning;
+                servedCustomers++;
+                happiness = Math.min(100, happiness + 5);
+                
+                customers = customers.filter(c => c.id !== selectedCustomer);
+                selectedCustomer = null;
+                
+                showNotification(`เสิร์ฟ ${currentDish.name} สำเร็จ! รายได้ ฿${totalEarning} ${tip > 0 ? '(มีทิป!)' : ''}`, 'success');
+                
+            } else {
+                // ผิดออร์เดอร์
+                happiness = Math.max(0, happiness - 15);
+                customers = customers.filter(c => c.id !== selectedCustomer);
+                selectedCustomer = null;
+                
+                showNotification(`เสิร์ฟผิดออร์เดอร์! ลูกค้าไม่พอใจ 😡`, 'error');
+            }
+
+            clearKitchen();
+            renderCustomers();
+            updateDisplay();
+        }
+
+        function showNotification(text, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notification.className = `notification ${type}`;
+            notificationText.textContent = text;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function gameLoop() {
+            // เพิ่มลูกค้าใหม่
+            if (Math.random() < 0.02 && customers.length < 4) {
+                addCustomer();
+            }
+            
+            // อัพเดทความอดทน
+            updatePatience();
+            
+            // เช็คเกมจบ
+            if (happiness <= 0) {
+                showNotification('เกมจบ! ลูกค้าไม่พอใจร้านค่ะ 😭', 'error');
+                setTimeout(() => {
+                    if (confirm('เริ่มเกมใหม่ไหมคะ?')) {
+                        resetGame();
+                    }
+                }, 2000);
+                return;
+            }
+        }
+
+        function resetGame() {
+            money = 0;
+            happiness = 100;
+            servedCustomers = 0;
+            customers = [];
+            selectedCustomer = null;
+            customerIdCounter = 0;
+            clearKitchen();
+            updateDisplay();
+            renderCustomers();
+        }
+
+        // เริ่มเกม
+        createParticles();
+        updateDisplay();
+        renderCustomers();
+        
+        // เพิ่มลูกค้าแรก
+        addCustomer();
+        addCustomer();
+
+        // เริ่ม game loop
+        setInterval(gameLoop, 100);
+
+        // เอฟเฟคคลิก
+        document.addEventListener('click', function(e) {
+            const ripple = document.createElement('div');
+            ripple.style.position = 'fixed';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(255, 182, 193, 0.6)';
+            ripple.style.transform = 'scale(0)';
+            ripple.style.animation = 'ripple 0.6s linear';
+            ripple.style.left = (e.clientX - 25) + 'px';
+            ripple.style.top = (e.clientY - 25) + 'px';
+            ripple.style.width = '50px';
+            ripple.style.height = '50px';
+            ripple.style.pointerEvents = 'none';
+            ripple.style.zIndex = '999';
+            
+            document.body.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
