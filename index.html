@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แนะนำตัว ภษมน (วาด)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sriracha&family=Prompt:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #f7e7e8; /* สีชมพูพาสเทล */
+            color: #4a4a4a;
+            scroll-behavior: smooth;
+        }
+
+        .sriracha-font {
+            font-family: 'Sriracha', cursive;
+        }
+
+        .section-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 1rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        .section-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cartoon-image {
+            width: 200px;
+            height: auto;
+            border-radius: 9999px;
+            border: 8px solid #ffffff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            animation: bounce 2s infinite ease-in-out;
+            margin-bottom: 2rem;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- ส่วนนำทาง -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-80 backdrop-blur-sm p-4 shadow-lg">
+        <div class="container mx-auto flex justify-center space-x-4 md:space-x-8">
+            <a href="#home" class="text-lg font-bold hover:text-pink-500 transition-colors">หน้าแรก</a>
+            <a href="#about" class="text-lg font-bold hover:text-pink-500 transition-colors">เกี่ยวกับฉัน</a>
+            <a href="#interests" class="text-lg font-bold hover:text-pink-500 transition-colors">ความสนใจ</a>
+            <a href="#hobbies" class="text-lg font-bold hover:text-pink-500 transition-colors">กิจกรรมที่ชอบ</a>
+            <a href="#contact" class="text-lg font-bold hover:text-pink-500 transition-colors">ติดต่อฉัน</a>
+        </div>
+    </nav>
+
+    <!-- หน้าที่ 1: หน้าแรก -->
+    <section id="home" class="section-container bg-pink-200">
+        <h1 class="text-5xl md:text-7xl font-bold sriracha-font mb-4 text-white drop-shadow-lg">สวัสดีค่ะ!</h1>
+        <p class="text-2xl md:text-3xl font-light text-pink-700">ยินดีที่ได้รู้จักนะคะ</p>
+        <img src="https://placehold.co/200x200/ffc6e6/ffffff?text=Wad" alt="ภาพการ์ตูนภษมน" class="cartoon-image">
+    </section>
+
+    <!-- หน้าที่ 2: เกี่ยวกับฉัน -->
+    <section id="about" class="section-container bg-yellow-100">
+        <h2 class="text-4xl md:text-5xl font-bold sriracha-font text-yellow-800 mb-6">เกี่ยวกับฉัน</h2>
+        <p class="text-xl md:text-2xl font-light text-yellow-700">
+            ฉันชื่อ <span class="font-bold">ภษมน ตั้งตระกูล</span><br>
+            ชื่อเล่น <span class="font-bold">วาด</span> ค่ะ
+        </p>
+        <img src="https://placehold.co/200x200/f6d7a4/ffffff?text=About+Me" alt="ภาพการ์ตูนเกี่ยวกับฉัน" class="cartoon-image">
+    </section>
+
+    <!-- หน้าที่ 3: ความสนใจ -->
+    <section id="interests" class="section-container bg-teal-100">
+        <h2 class="text-4xl md:text-5xl font-bold sriracha-font text-teal-800 mb-6">ความสนใจ</h2>
+        <p class="text-xl md:text-2xl font-light text-teal-700 max-w-2xl mx-auto">
+            ฉันมีความสนใจเป็นพิเศษในด้าน <span class="font-bold">การออกแบบ</span> และ <span class="font-bold">ด้านศิลปะ</span><br>
+            ไม่ว่าจะเป็นงานวาด งานประดิษฐ์ หรือการออกแบบกราฟิก ฉันก็หลงใหลไปซะทั้งหมดเลยค่ะ
+        </p>
+        <img src="https://placehold.co/200x200/a2f7d9/ffffff?text=Art+Design" alt="ภาพการ์ตูนความสนใจ" class="cartoon-image">
+    </section>
+
+    <!-- หน้าที่ 4: กิจกรรมที่ชอบทำ -->
+    <section id="hobbies" class="section-container bg-purple-100">
+        <h2 class="text-4xl md:text-5xl font-bold sriracha-font text-purple-800 mb-6">กิจกรรมที่ชอบ</h2>
+        <ul class="text-xl md:text-2xl font-light text-purple-700 list-none space-y-4">
+            <li>
+                <div class="flex items-center justify-center space-x-4">
+                    <img src="https://placehold.co/100x100/e6c9f7/ffffff?text=Read" alt="ภาพการ์ตูนอ่านหนังสือ" class="w-20 h-20 rounded-full">
+                    <span>อ่านหนังสือ 📚</span>
+                </div>
+            </li>
+            <li>
+                <div class="flex items-center justify-center space-x-4">
+                    <img src="https://placehold.co/100x100/d6a6f7/ffffff?text=Draw" alt="ภาพการ์ตูนวาดรูป" class="w-20 h-20 rounded-full">
+                    <span>วาดรูป 🎨</span>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <!-- หน้าที่ 5: ติดต่อฉัน -->
+    <section id="contact" class="section-container bg-pink-200">
+        <h2 class="text-4xl md:text-5xl font-bold sriracha-font text-pink-700 mb-6">มาคุยกันเถอะ!</h2>
+        <p class="text-xl md:text-2xl font-light text-pink-600 max-w-2xl mx-auto">
+            ถ้าสนใจเรื่องศิลปะและการออกแบบเหมือนกัน หรืออยากแลกเปลี่ยนความคิดเห็น<br>
+            ก็ยินดีเสมอเลยค่ะ!
+        </p>
+        <img src="https://placehold.co/200x200/ffc6e6/ffffff?text=Contact" alt="ภาพการ์ตูนติดต่อ" class="cartoon-image">
+    </section>
+
+    <script>
+        // โค้ด JavaScript สำหรับเพิ่มเอฟเฟกต์การแสดงผลเมื่อเลื่อนหน้าจอ
+        const sections = document.querySelectorAll('.section-container');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.25 // แสดงผลเมื่อส่วนของหน้าจอที่กำหนดปรากฏขึ้น 25%
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // หยุดการสังเกตเมื่อแสดงผลแล้ว
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+
+</body>
+</html>
